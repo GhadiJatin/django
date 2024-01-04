@@ -1,0 +1,607 @@
+C:\Users\jatin\Pictures\DjangoA>python -m venv venv
+
+C:\Users\jatin\Pictures\DjangoA>cd venv
+
+C:\Users\jatin\Pictures\DjangoA\venv>cd scripts
+
+C:\Users\jatin\Pictures\DjangoA\venv\Scripts>activate
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>pip install django	
+
+[notice] A new release of pip is available: 23.2.1 -> 23.3.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>python.exe -m pip install --upgrade pip
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>cd ..
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv>cd ..
+
+(venv) C:\Users\jatin\Pictures\DjangoA>django-admin startproject mysite
+
+(venv) C:\Users\jatin\Pictures\DjangoA>cd mysite
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py startapp food
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py runserver
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+
+-----------------------------------------------------------13.12.23------------------------------------------------------------
+urls.py\mysite:-
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('food/', include('food.urls')),
+]
+-------------------------------------------
+urls.py\food:-
+rom django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+]
+-------------------------------------------
+views.py/food:-
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+
+def index(request):
+
+    return HttpResponse('<h1>This is an index view</h1>')
+-------------------------------------------------------------------------------------------------------------------------------------------
+urls.py\food
+from django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('test/', views.test, name='test')
+]
+--------------------------------------------
+views.py\food
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+
+def index(request):
+
+    return HttpResponse('<h1>This is an index view</h1>')
+
+def test(reques):
+    return HttpResponse("<h1 style='color:crimson'>This is Test Page</h1>")
+------------------------------------------------------------------------------------------------------------------------------------------------
+models.py\food:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500)
+    item_price = models.IntegerField()
+-----------------------------------------------------
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py makemigrations
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py sqlmigrate food 0001
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>>
+
+------after that this-----
+
+>>> from food.models import Item
+>>> item_one = Item(item_name='Pizza', item_desc='Cheezy Pizza', item_price=20)
+>>> item_one
+<Item: Item object (None)>
+>>> item_one.save()
+>>> item_one
+<Item: Item object (1)>
+>>> item_one.id
+1
+>>> item_one.item_name
+'Pizza'
+>>> item_one.item_desc
+'Cheezy Pizza'
+>>> item_one.item_price
+20
+>>> item_two = Item(item_name='Burger', item_desc='Spicy Burger', item_price=25)
+>>> item_two.save()
+>>> item_two.id
+2
+>>> exit()
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>deactivate
+C:\Users\jatin\Pictures\DjangoA\mysite>
+
+--------------------------------------------------------------------14.12.23----------------------------------------------------------------------
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from food.models import Item
+>>> items = Item.object.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: type object 'Item' has no attribute 'object'
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> item = Item.objects.all().values()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> item = Item.objects.all().values()
+>>> items = Item.objects.all().values()
+>>> items
+<QuerySet [{'id': 1, 'item_name': 'Pizza', 'item_desc': 'Cheezy Pizza', 'item_price': 20}, {'id': 2, 'item_name': 'Burger', 'item_desc': 'Spicy Burger', 'item_price': 25}]>
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> exit
+Use exit() or Ctrl-Z plus Return to exit
+>>> exit()
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from food.models import Item
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Burger>]>
+>>> item = Item.objects.get(id=2)
+>>> item
+<Item: Burger>
+>>> item.id
+2
+>>> item.item_name
+'Burger'
+>>> item = Item.objects.get(item_price=20)
+>>> item
+<Item: Pizza>
+>>> a = Item(item_name='Pasta', item_desc='Labanese Pasta', item_price=20)
+>>> a.save()
+>>> a.item_name
+'Pasta'
+>>> items = Item.objects.filter(item_price=20)
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Pasta>]>
+>>> items = Item.objects.filter(item_price=20)
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Pasta>]>
+>>> exit()
+--------------------
+models.py\food
+def __str__(self):
+        return self.item_name + Hello
+---------------------
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py createsuperuser
+Username (leave blank to use 'jatin'): Alex
+Email address: alex@gmail.com
+Password:
+Password (again):
+Superuser created successfully.
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py runserver
+-------------------------
+admin.py\food
+from django.contrib import admin
+from food.models import Item
+
+# Register your models here.
+
+admin.site.register(Item)
+-------------------------
+1. Create templates folder in food
+2. Create Docs file in this templates
+3. Create Folder in templates name food >>> 4.In Food folder create file home.html
+-------------------------
+views.py\food:-
+from django.shortcuts import render
+from django.http import HttpResponse
+from food.models import Item
+
+# Create your views here.
+
+def index(request):
+    itemlist  = Item.objects.all()
+
+    context = {
+        'itemlist':itemlist
+    }
+    return render(request, 'food/home.html', context)
+
+
+def test(request):
+
+    return HttpResponse("<h1 style='color:crimson'>This is Test Page</h1>")
+
+--------------------------
+home.html:-
+{{ itemlist }}
+------------------------------------------------------------------18.12.23---------------------------------------------------------------------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            {{ item }}
+        </li>
+    </ul>
+    
+{% endfor %}
+----------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            {{ item.id }} -- {{ item.item_name }} -- {{ item.item_price }}
+        </li>
+    </ul>
+
+{% endfor %}
+----------------
+urls.py\food:-
+from django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+]
+----------------
+views.py:-
+from django.shortcuts import render
+from django.http import HttpResponse
+from food.models import Item
+
+# Create your views here.
+
+def index(request):
+    itemlist  = Item.objects.all()
+
+    context = {
+        'itemlist':itemlist
+    }
+    return render(request, 'food/home.html', context)
+
+
+def detail(request, item_id):
+    item = Item.objects.get(id=item_id)
+
+    context = {
+        'item':item
+    }
+
+    return render(request, 'food/detail.html', context)
+-----------------
+create new file in temp/food detail.html
+detail.html:-<h3>{{ item.item_name }}</h3>
+<h3>{{ item.item_desc }}</h3>
+<h3>{{ item.item_price }}</h3>
+-----------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="/food/detail/{{ item.id }}/">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+----------------------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+-------------------------------------------------------------------------------------19.12.23---------------------------------------------------------------
+create folder in food - food>>static,docs>>food,style.css
+style.css:-
+body{
+    background-color : rgb(48, 217, 250);  
+}
+-----------
+create file in food>templates>food>base.html
+base.html:-
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'food/style.css' %}">
+</head>
+<body>
+    <h1> This is Start of base.html</h1>
+
+    {% block body %}
+    {% endblock %}
+    <h1> This is End of base.html</h1>
+</body>
+</html>
+------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+
+{% endblock %}
+-------------
+detail.html:-
+{% extends 'food/base.html' %}
+
+{% block body %}
+
+<h3>{{ item.item_name }}</h3>
+<h3>{{ item.item_desc }}</h3>
+<h3>{{ item.item_price }}</h3>
+
+{% endblock %}
+-------------
+base.html:-
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'food/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-success">
+        <a href="#" class="navbar-brand">
+            Foodx
+        </a>
+
+        <div class="navbar">
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Add Item
+            </a>
+
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Profile
+            </a>
+
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Sign Up
+            </a>
+        </div>
+    </nav>
+
+    <div class="mb-5">
+
+    </div>
+
+    {% block body %}
+    {% endblock %}
+    
+</body>
+
+</html>
+----------------------
+models.py:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500)
+    item_price = models.IntegerField()
+    item_image = models.CharField(
+        default = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Fplaceholder_1377194&psig=AOvVaw36RW-RSFevjrLkYoSmYb3-&ust=1703071266366000&source=images&cd=vfe&ved=0CBIQjRxqFwoTCMCBj4qxm4MDFQAAAAAdAAAAABAJ',
+        max_length=500
+    )
+
+    def __str__(self): 
+        return self.item_name 
+---------------------
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py makemigrations
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py sqlmigrate food 001
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+---------------------------------------------------------------------20.12.23-----------------------------------------------------------------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="135px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3>{{ item.item_name }}</h3>
+            <h3>{{ item.item_desc }}</h3>
+            <h3>{{ item.item_price }}</h3>
+
+        </div>
+
+        <div class="col-md-3">
+            <a href="#">
+                Button
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+----------------------------------------
+urls.py\food:-
+from django.urls import path
+from food import views
+
+app_name = 'food'
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+]
+---------------------------------------
+home.py:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'food:detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="150px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3 style="font: size 1.5em;">{{ item.item_name }}</h3>
+            <h5 style="font-style: italic; font: size 1.5em;;">{{ item.item_desc }}</h5>
+            <h6>${{ item.item_price }}</h6>
+            <h6 style="font-style: italic;">added for: </h6>
+            <h6 style="font-style: italic;">added by superuser</h6>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{% url 'food:detail' item.id %}">
+                Button  
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+-----------------------------
+models.py:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500, default='Dhoni finish off in style India lift the World Cup After 28 year party start in dressing room the indian captain icriduble')
+    item_price = models.IntegerField()
+    item_image = models.CharField(
+        default = 'https://w7.pngwing.com/pngs/277/489/png-transparent-fast-food-eating-maps-location-placeholder-pin-icon.png',
+        max_length=500
+    )
+
+    def __str__(self): 
+        return self.item_name 
+----------------------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'food:detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="150px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3 style="font: size 1.5em;">{{ item.item_name }}</h3>
+            <h5 style="font-style: italic; font: size 1.5em;;">{{ item.item_desc | truncatewords:6 }}</h5>
+            <h6>${{ item.item_price }}</h6>
+            <h6 style="font-style: italic;">added for: </h6>
+            <h6 style="font-style: italic;">added by superuser</h6>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{% url 'food:detail' item.id %}" style="width: 100px;" class="btn btn-success">
+                Details  
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
