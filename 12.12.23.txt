@@ -1,0 +1,1056 @@
+C:\Users\jatin\Pictures\DjangoA>python -m venv venv
+
+C:\Users\jatin\Pictures\DjangoA>cd venv
+
+C:\Users\jatin\Pictures\DjangoA\venv>cd scripts
+
+C:\Users\jatin\Pictures\DjangoA\venv\Scripts>activate
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>pip install django	
+
+[notice] A new release of pip is available: 23.2.1 -> 23.3.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>python.exe -m pip install --upgrade pip
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv\Scripts>cd ..
+
+(venv) C:\Users\jatin\Pictures\DjangoA\venv>cd ..
+
+(venv) C:\Users\jatin\Pictures\DjangoA>django-admin startproject mysite
+
+(venv) C:\Users\jatin\Pictures\DjangoA>cd mysite
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py startapp food
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py runserver
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+
+-----------------------------------------------------------13.12.23------------------------------------------------------------
+urls.py\mysite:-
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('food/', include('food.urls')),
+]
+-------------------------------------------
+urls.py\food:-
+rom django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+]
+-------------------------------------------
+views.py/food:-
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+
+def index(request):
+
+    return HttpResponse('<h1>This is an index view</h1>')
+-------------------------------------------------------------------------------------------------------------------------------------------
+urls.py\food
+from django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('test/', views.test, name='test')
+]
+--------------------------------------------
+views.py\food
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+
+def index(request):
+
+    return HttpResponse('<h1>This is an index view</h1>')
+
+def test(reques):
+    return HttpResponse("<h1 style='color:crimson'>This is Test Page</h1>")
+------------------------------------------------------------------------------------------------------------------------------------------------
+models.py\food:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500)
+    item_price = models.IntegerField()
+-----------------------------------------------------
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py makemigrations
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py sqlmigrate food 0001
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>>
+
+------after that this-----
+
+>>> from food.models import Item
+>>> item_one = Item(item_name='Pizza', item_desc='Cheezy Pizza', item_price=20)
+>>> item_one
+<Item: Item object (None)>
+>>> item_one.save()
+>>> item_one
+<Item: Item object (1)>
+>>> item_one.id
+1
+>>> item_one.item_name
+'Pizza'
+>>> item_one.item_desc
+'Cheezy Pizza'
+>>> item_one.item_price
+20
+>>> item_two = Item(item_name='Burger', item_desc='Spicy Burger', item_price=25)
+>>> item_two.save()
+>>> item_two.id
+2
+>>> exit()
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>deactivate
+C:\Users\jatin\Pictures\DjangoA\mysite>
+
+--------------------------------------------------------------------14.12.23----------------------------------------------------------------------
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from food.models import Item
+>>> items = Item.object.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: type object 'Item' has no attribute 'object'
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> item = Item.objects.all().values()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> item = Item.objects.all().values()
+>>> items = Item.objects.all().values()
+>>> items
+<QuerySet [{'id': 1, 'item_name': 'Pizza', 'item_desc': 'Cheezy Pizza', 'item_price': 20}, {'id': 2, 'item_name': 'Burger', 'item_desc': 'Spicy Burger', 'item_price': 25}]>
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Item object (1)>, <Item: Item object (2)>]>
+>>> exit
+Use exit() or Ctrl-Z plus Return to exit
+>>> exit()
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py shell
+Python 3.11.7 (tags/v3.11.7:fa7a6f2, Dec  4 2023, 19:24:49) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from food.models import Item
+>>> items = Item.objects.all()
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Burger>]>
+>>> item = Item.objects.get(id=2)
+>>> item
+<Item: Burger>
+>>> item.id
+2
+>>> item.item_name
+'Burger'
+>>> item = Item.objects.get(item_price=20)
+>>> item
+<Item: Pizza>
+>>> a = Item(item_name='Pasta', item_desc='Labanese Pasta', item_price=20)
+>>> a.save()
+>>> a.item_name
+'Pasta'
+>>> items = Item.objects.filter(item_price=20)
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Pasta>]>
+>>> items = Item.objects.filter(item_price=20)
+>>> items
+<QuerySet [<Item: Pizza>, <Item: Pasta>]>
+>>> exit()
+--------------------
+models.py\food
+def __str__(self):
+        return self.item_name + Hello
+---------------------
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py createsuperuser
+Username (leave blank to use 'jatin'): Alex
+Email address: alex@gmail.com
+Password:
+Password (again):
+Superuser created successfully.
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py runserver
+-------------------------
+admin.py\food
+from django.contrib import admin
+from food.models import Item
+
+# Register your models here.
+
+admin.site.register(Item)
+-------------------------
+1. Create templates folder in food
+2. Create Docs file in this templates
+3. Create Folder in templates name food >>> 4.In Food folder create file home.html
+-------------------------
+views.py\food:-
+from django.shortcuts import render
+from django.http import HttpResponse
+from food.models import Item
+
+# Create your views here.
+
+def index(request):
+    itemlist  = Item.objects.all()
+
+    context = {
+        'itemlist':itemlist
+    }
+    return render(request, 'food/home.html', context)
+
+
+def test(request):
+
+    return HttpResponse("<h1 style='color:crimson'>This is Test Page</h1>")
+
+--------------------------
+home.html:-
+{{ itemlist }}
+------------------------------------------------------------------18.12.23---------------------------------------------------------------------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            {{ item }}
+        </li>
+    </ul>
+    
+{% endfor %}
+----------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            {{ item.id }} -- {{ item.item_name }} -- {{ item.item_price }}
+        </li>
+    </ul>
+
+{% endfor %}
+----------------
+urls.py\food:-
+from django.urls import path
+from food import views
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+]
+----------------
+views.py:-
+from django.shortcuts import render
+from django.http import HttpResponse
+from food.models import Item
+
+# Create your views here.
+
+def index(request):
+    itemlist  = Item.objects.all()
+
+    context = {
+        'itemlist':itemlist
+    }
+    return render(request, 'food/home.html', context)
+
+
+def detail(request, item_id):
+    item = Item.objects.get(id=item_id)
+
+    context = {
+        'item':item
+    }
+
+    return render(request, 'food/detail.html', context)
+-----------------
+create new file in temp/food detail.html
+detail.html:-<h3>{{ item.item_name }}</h3>
+<h3>{{ item.item_desc }}</h3>
+<h3>{{ item.item_price }}</h3>
+-----------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="/food/detail/{{ item.id }}/">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+----------------------------
+home.html:-
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+-------------------------------------------------------------------------------------19.12.23---------------------------------------------------------------
+create folder in food - food>>static,docs>>food,style.css
+style.css:-
+body{
+    background-color : rgb(48, 217, 250);  
+}
+-----------
+create file in food>templates>food>base.html
+base.html:-
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'food/style.css' %}">
+</head>
+<body>
+    <h1> This is Start of base.html</h1>
+
+    {% block body %}
+    {% endblock %}
+    <h1> This is End of base.html</h1>
+</body>
+</html>
+------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul>
+
+{% endfor %}
+
+{% endblock %}
+-------------
+detail.html:-
+{% extends 'food/base.html' %}
+
+{% block body %}
+
+<h3>{{ item.item_name }}</h3>
+<h3>{{ item.item_desc }}</h3>
+<h3>{{ item.item_price }}</h3>
+
+{% endblock %}
+-------------
+base.html:-
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'food/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-success">
+        <a href="#" class="navbar-brand">
+            Foodx
+        </a>
+
+        <div class="navbar">
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Add Item
+            </a>
+
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Profile
+            </a>
+
+            <a href="#" class="nav-item nav-link btn btn-dark">
+                Sign Up
+            </a>
+        </div>
+    </nav>
+
+    <div class="mb-5">
+
+    </div>
+
+    {% block body %}
+    {% endblock %}
+    
+</body>
+
+</html>
+----------------------
+models.py:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500)
+    item_price = models.IntegerField()
+    item_image = models.CharField(
+        default = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Fplaceholder_1377194&psig=AOvVaw36RW-RSFevjrLkYoSmYb3-&ust=1703071266366000&source=images&cd=vfe&ved=0CBIQjRxqFwoTCMCBj4qxm4MDFQAAAAAdAAAAABAJ',
+        max_length=500
+    )
+
+    def __str__(self): 
+        return self.item_name 
+---------------------
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py makemigrations
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py sqlmigrate food 001
+
+(venv) C:\Users\jatin\Pictures\DjangoA\mysite>python manage.py migrate
+---------------------------------------------------------------------20.12.23-----------------------------------------------------------------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="135px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3>{{ item.item_name }}</h3>
+            <h3>{{ item.item_desc }}</h3>
+            <h3>{{ item.item_price }}</h3>
+
+        </div>
+
+        <div class="col-md-3">
+            <a href="#">
+                Button
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+----------------------------------------
+urls.py\food:-
+from django.urls import path
+from food import views
+
+app_name = 'food'
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+]
+---------------------------------------
+home.py:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'food:detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="150px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3 style="font: size 1.5em;">{{ item.item_name }}</h3>
+            <h5 style="font-style: italic; font: size 1.5em;;">{{ item.item_desc }}</h5>
+            <h6>${{ item.item_price }}</h6>
+            <h6 style="font-style: italic;">added for: </h6>
+            <h6 style="font-style: italic;">added by superuser</h6>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{% url 'food:detail' item.id %}">
+                Button  
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+-----------------------------
+models.py:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500, default='Dhoni finish off in style India lift the World Cup After 28 year party start in dressing room the indian captain icriduble')
+    item_price = models.IntegerField()
+    item_image = models.CharField(
+        default = 'https://w7.pngwing.com/pngs/277/489/png-transparent-fast-food-eating-maps-location-placeholder-pin-icon.png',
+        max_length=500
+    )
+
+    def __str__(self): 
+        return self.item_name 
+----------------------------
+home.html:-
+{% extends 'food/base.html' %} 
+
+{% block body %}
+
+{% for item in itemlist %}
+<!----
+    <ul>
+        <li>
+            <a href="{% url 'food:detail' item.id %}">
+                {{ item.id }} -- {{ item.item_name }} 
+            </a>
+            
+        </li>
+    </ul> -->
+
+    <div class="row mb-5">
+        <div class="col-md-3 offset-md-2">
+            <img src="{{ item.item_image }}" class="card" height="150px" width="230px">
+        </div>
+
+        <div class="col-md-4">
+            <h3 style="font: size 1.5em;">{{ item.item_name }}</h3>
+            <h5 style="font-style: italic; font: size 1.5em;;">{{ item.item_desc | truncatewords:6 }}</h5>
+            <h6>${{ item.item_price }}</h6>
+            <h6 style="font-style: italic;">added for: </h6>
+            <h6 style="font-style: italic;">added by superuser</h6>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{% url 'food:detail' item.id %}" style="width: 100px;" class="btn btn-success">
+                Details  
+            </a>
+        </div>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+-------------------------------------------------------------------04.01.2024----------------------------------------------------------------------------------------------
+mdels.py/food:-
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+    prod_code = models.IntegerField(default=100)
+    for_user = models.CharField(
+        max_length=100,
+        default='xyz'
+    )
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=500, default='Dhoni finish off in style India lift the World Cup After 28 year party start in dressing room the indian captain icriduble')
+    item_price = models.IntegerField()
+    item_image = models.CharField(
+        default = 'https://w7.pngwing.com/pngs/277/489/png-transparent-fast-food-eating-maps-location-placeholder-pin-icon.png',
+        max_length=500
+    )
+
+    def __str__(self): 
+        return self.item_name 
+
+--------------------------------------
+after that make migratins
+sql migrate
+migratre
+------------------------------
+home.html:-
+ <div class="col-md-4">
+            <h3 style="font: size 1.5em;">{{ item.item_name }}</h3>
+            <h5 style="font-style: italic; font: size 1.5em;;">{{ item.item_desc | truncatewords:6 }}</h5>
+            <h6>${{ item.item_price }}</h6>
+            <h6 style="font-style: italic;">added for: {{ item.for_user }}</h6>
+            <h6 style="font-style: italic;">added by superuser {{ user.username }}</h6>
+        </div>
+----------------------------------
+base.html:-
+nav class="navbar navbar-dark bg-success">
+        <a href="{% url 'food:index' %}" class="navbar-brand">
+            Tasty Hub
+        </a>
+--------------------------------
+details.html:-
+{% extends 'food/base.html' %}
+
+{% block body %}
+
+
+
+
+<div class="row">
+    <div class="col-md-2 offset-md-1">
+        <img class="card" height="150px" width="250px" src="{{ item.item_image }}">
+    </div>
+
+    <div class="col-md-4 offset-md-1">
+        <h1 style="font-style: italic;">{{ item.item_name }}</h1>
+        <h2 style="font-style: italic; font-size: 1.3rem; text-align: justify;">{{ item.item_desc }}</h2>
+        <h3>{{ item.item_price }}</h3>
+    </div>
+    
+    <div class="col-md-3 offset-md-1">
+        <a href="#" style="width: 80px; " class="btn btn-warning">Edit</a>
+        <a href="#" style="width: 80px; " class="btn btn-danger">Delete</a>
+        <a href="#" style="width: 80px; " class="btn btn-success">Back</a>
+    </div>
+</div>
+
+{% endblock %}
+------------------------------------------
+create form file in food>forms.py
+forms.py:-
+from django import forms
+from food.models import Item
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['prod_code', 'for_user', 'item_name', 'item_desc', 'item_price', 'item_image']
+--------------------------------------------
+urls.py:-
+rlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+    path('add/', views.CreateItem, name='create_item'),
+]
+-------------------------------------------------
+views.py:-
+
+
+def CreateItem(request):
+    context = {
+        
+    }
+    return render(request, 'food/item-form.html', context)
+------------------------------------
+create file in templates>itema-form.html
+item-form:- This is an add item
+---------------------------------
+base.html:-
+<div class="navbar">
+            <a href="{% url 'food:create_item' %}" class="nav-item nav-link btn btn-dark">
+                Add Item
+            </a>
+------------------------------------------------------------------06.01.24----------------------------------------------------------------------------------
+detail.html:-
+ 
+    <div class="col-md-3 offset-md-1">
+        <a href="{% url 'food:update_item' item.id %}" style="width: 80px; " class="btn btn-warning">Edit</a>
+        <a href="{% url 'food:delete_item' item.id %}" style="width: 80px; " class="btn btn-danger">Delete</a>
+        <a href="{% url 'food:index' %}" style="width: 80px; " class="btn btn-success">Back</a>
+    </div>
+</div>
+
+{% endblock %}
+-----------------------------
+urls.py:-
+
+urlpatterns = [
+    path('home/', views.index, name='index'),
+    path('detail/<int:item_id>/', views.detail, name='detail'),
+    path('add/', views.CreateItem, name='create_item'), 
+    path('update/<int:item_id>/', views.UpdateItem, name='update_item'),
+    path('delete/<int:item_id>/', views.DeleteItem, name='delete_item'),
+]
+----------------------------------------
+views.py:-
+
+def DeleteItem(request, item_id):
+
+    context = {
+
+    }
+
+    if request.method == 'POST':
+        pass
+
+    return render(request, 'food/item-delete.html', context)
+----------------------------------------------
+Create file in templates>food>item-delete.html
+item-delete.html:-
+{% extends 'food/base.html' %}
+
+{% block body %}
+
+<form method="POST">
+    {% csrf_token %}
+    <h1>Are you sure you wnt to delete {{ item.item_name }}</h1>
+    <button type="submit">Confirm</button>
+</form>
+
+{% endblock %}
+-------------------------------------------
+views.py:-
+def DeleteItem(request, item_id):
+
+    item = Item.objects.get(id=item_id)
+
+    context = {
+        'item':item
+    }
+
+    if request.method == 'POST':
+        item.delete()
+        return redirect('food:index')
+
+    return render(request, 'food/item-delete.html', context)
+------------------------------------------------------------------------09.01.2024-------------------------------------------------------------------------------------------
+item-form.html:-
+{% extends "food/base.html" %}
+
+
+{% block body  %}
+
+<h1>This is an Item Form Pages</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Restaurant Owner: </label><br>
+    {{ form.rest_owner }}
+
+    <label>Prod Code: </label><br>
+    {{ form.prod_code }}
+>
+    <label>Item Name: </label><br>
+    {{ form.item_name }}
+
+    <label>Item Description: </label><br>
+    {{ form.item_desc }}
+
+    <label>Item Prices: </label><br>
+    {{ form.item_price }}
+
+    <label>Item Image: </label><br>
+    {{ form.item_image }}
+    
+    <button type="submit">Saves</button>
+</form>
+
+{% endblock  %}
+-----------------------------------------
+forms.py:-
+from django import forms
+from food.models import Item
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['rest_owner', 'prod_code', 'item_name', 'item_desc', 'item_price', 'item_image']
+-------------------------------------------
+views.py:-
+def CreateItem(request):
+
+    form = ItemForm(request.POST or None)
+
+    if request.method == 'POST':
+        form.instance.added_by = request.user.username
+        form.save()
+        return redirect('food:index')
+    
+    context = {
+        'form':form
+    }
+    return render(request, 'food/item-form.html', context)
+-------------------------------------------
+create App users in my site
+connect in setting and urls
+-------------------------------------------------------------------10.11.2024----------------------------------------------------------------------------------------
+views.py of users:-
+from django.shortcuts import render
+
+# Create your views here.
+
+def index(request):
+
+    context = {
+
+    }
+
+    return render(request, 'users/home.html', context)
+-----------------------------------------
+create file urls.py in users
+users> urls,py:-
+from django.urls import path
+from users import views as userviews
+
+app_name = 'users'
+
+urlpatterns = [
+    path('home/', userviews.index, name='index'),
+]
+--------------------------------
+create folder in users>templates>docs
+in templates create home.html
+home.html:-
+<h1>This is the users home page</h1>
+---------------------------------
+insert path in urls.py of mysite:-
+from django.contrib import admin
+from django.urls import path, include
+from users import views as usersviews
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('food/', include('food.urls')),
+    path('users/', include('users.urls')),
+    path('register/', usersviews.register, name='register'),
+]
+--------------------------------------
+views.py/users:-
+
+# register
+#-------------------------------------------------------------------------------------------------------------
+def register(request):
+
+    context = {
+
+    }
+
+    return render(request, 'users/register.html', context)
+---------------------------------------
+create file in users>templates>register.html:-
+register.html:-
+{% extends "food/base.html" %} 
+
+{% block body %}
+
+<h1>This is th Sign UP Page</h1>
+
+{% endblock %}
+---------------------------------------
+views.py of users:-
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+# Create your views here.
+
+def index(request):
+
+    context = {
+
+    }
+
+    return render(request, 'users/home.html', context)
+
+
+# register
+#-------------------------------------------------------------------------------------------------------------
+def register(request):
+
+    form = UserCreationForm(request.POST or None)
+
+    context = {
+        'form':form
+    }
+
+    if request.method == 'POST':
+        form.save()
+        return redirect('food:index')
+    
+    return render(request, 'users/register.html', context)
+------------------------------------------
+reigister.html of users:-
+{% extends "food/base.html" %} 
+
+{% block body %}
+
+<h1>This is th Sign UP Page</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}
+-------------------------------------------
+Add link in base.html:-
+ <a href="{% url 'register' %}" class="nav-item nav-link btn btn-dark">
+                Sign Up
+            </a>
+------------------------------------------
+Another method
+views.py users:-
+def register(request):
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST or None)
+        form.save()
+        return redirect('food:index')
+
+    else:
+        form = UserCreationForm
+
+    context = {
+        'form':form
+    }
+
+    
+    return render(request, 'users/register.html', context)
+------------------------------------------------------------------------------11.01.24-------------------------------------------------------------
+base.html:-
+ {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+-------------------------------------------
+views.py of users:-
+def register(request):
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+          username = form.cleaned_data.get('username')
+          form.save()
+          messages.success(
+                request,
+                'Welcome, {} your account has been successfully created'.format(username)
+            )
+        return redirect('food:index')
+
+    else:
+        form = UserCreationForm(None)
+
+    context = {
+        'form':form
+    }
+
+    
+    return render(request, 'users/register.html', context)
+--------------------------------------------
+create forms.py file in users:-
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    class Meta:
+        model = User
+        fields = {'username', 'email', 'first_name', 'last_name', 'password1', 'password2'}
+-------------------------------------------
+views.py:-
+Replace UsercreationForm TO RegisterForm 
+views.py of users:-
+from django.shortcuts import render, redirect
+from users.forms import RegisterForm
+from django.contrib import messages
+# Create your views here.
+
+def index(request):
+
+    context = {
+
+    }
+
+    return render(request, 'users/home.html', context)
+
+
+# register
+#-------------------------------------------------------------------------------------------------------------
+def register(request):
+
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+          username = form.cleaned_data.get('username')
+          form.save()
+          messages.success(
+                request,
+                'Welcome, {} your account has been successfully created'.format(username)
+            )
+        return redirect('food:index')
+
+    else:
+        form = RegisterForm(None)
+
+    context = {
+        'form':form
+    }
+
+    
+    return render(request, 'users/register.html', context)
+-------------------------------------------------
